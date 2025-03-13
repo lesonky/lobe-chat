@@ -75,7 +75,7 @@ export class LobeGoogleAI implements LobeRuntimeAI {
   constructor({ apiKey, baseURL, client, isVertexAi }: LobeGoogleAIParams = {}) {
     if (!apiKey) throw AgentRuntimeError.createError(AgentRuntimeErrorType.InvalidProviderAPIKey);
 
-    this.client = new GoogleGenerativeAI(apiKey);
+    // this.client = new GoogleGenerativeAI(apiKey);
     this.apiKey = apiKey;
     this.client = client ? (client as GoogleGenerativeAI) : new GoogleGenerativeAI(apiKey);
     this.baseURL = client ? undefined : baseURL || DEFAULT_BASE_URL;
