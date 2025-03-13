@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  macochat:
+    container_name: macochat
+    build:
+      context: .
+      dockerfile: Dockerfile.macochat
+      args:
+        - USE_CN_MIRROR=false  # 如果在中国构建，设置为 true
+    restart: always
+    ports:
+      - "3210:3210"
+    environment:
+      # 通用设置
+      - ACCESS_CODE=  # 设置访问密码，留空表示不需要密码
+      - FEATURE_FLAGS=-webrtc_sync,-language_model_settings,-openai_api_key,-openai_proxy_url,-dalle,-check_updates,-speech_to_text,-knowledge_base,-clerk_sign_up,+commercial_hide_github,+commercial_hide_docs
+      - NEXT_PUBLIC_CLIENT_DB=pglite
+
+      # 默认代理设置（如果需要）
+      - PROXY_URL=  # 例如 http://username:password@host:port 或 socks5://username:password@host:port
+
+      # 默认模型设置
+      - DEFAULT_AGENT_CONFIG=model=gemini-2.0-flash;provider=vertexai
+      - SYSTEM_AGENT=translation=vertexai/gemini-2.0-flash,topic=vertexai/gemini-2.0-flash,thread=vertexai/gemini-2.0-flash,agentMeta=vertexai/gemini-2.0-flash,queryRewrite=vertexai/gemini-2.0-flash,historyCompress=vertexai/gemini-2.0-flash
+
+      # VertexAI 设置（默认启用）
+      - ENABLED_VERTEXAI=1
+      - VERTEXAI_MODEL_LIST=
+      - VERTEXAI_CREDENTIALS=  # 填入您的 VertexAI 凭证
+      - VERTEXAI_LOCATION=us-central1
+      - VERTEXAI_PROJECT=  # 填入您的 VertexAI 项目 ID
+
+      # Google AI 设置（默认禁用）
+      - ENABLED_GOOGLE=0
+      - GOOGLE_API_KEY=  # 填入您的 Google API 密钥
+
+      # Ollama 设置（默认禁用）
+      - ENABLED_OLLAMA=0
+      - OLLAMA_PROXY_URL=http://host.docker.internal:11434  # 如果使用本地 Ollama
+
+      # OpenAI 设置（默认禁用）
+      - ENABLED_OPENAI=0
+      - OPENAI_API_KEY=  # 填入您的 OpenAI API 密钥
+
+      # OpenRouter 设置（默认禁用）
+      - ENABLED_OPENROUTER=0
+      - OPENROUTER_API_KEY=  # 填入您的 OpenRouter API 密钥
+    volumes:
+      - macochat-data:/app/.next/cache  # 持久化缓存数据
+
+volumes:
+  macochat-data:
